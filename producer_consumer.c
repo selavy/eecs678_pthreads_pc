@@ -315,6 +315,7 @@ void *producer (void *parg)
      * queue.
      */
     item_produced = (*total_produced)++;
+    printf("prod %d:  %d.\n", my_tid, item_produced);
     queueAdd (fifo, item_produced);
     pthread_mutex_unlock (fifo->mutex);
     pthread_cond_broadcast (fifo->notEmpty);
@@ -322,7 +323,6 @@ void *producer (void *parg)
     /*
      * Announce the production outside the critical section 
      */
-    printf("prod %d:  %d.\n", my_tid, item_produced);
 
   }
 
@@ -376,6 +376,7 @@ void *consumer (void *carg)
      * others are busy consuming them. 
      */
     queueRemove (fifo, &item_consumed);
+    printf ("con %d:   %d.\n", my_tid, item_consumed);
     (*total_consumed)++;
     pthread_mutex_unlock (fifo->mutex);
     pthread_cond_broadcast (fifo->notFull);
@@ -386,7 +387,6 @@ void *consumer (void *carg)
      * obtained from the queue and then announce its consumption.
      */
     do_work(CONSUMER_CPU,CONSUMER_CPU);
-    printf ("con %d:   %d.\n", my_tid, item_consumed);
 
   }
 
